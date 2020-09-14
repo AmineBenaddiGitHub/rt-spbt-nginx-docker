@@ -1,0 +1,54 @@
+sourceFile:
+  ./static/SpamWords.txt
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  test-on-borrow: true
+  validation-query: SELECT 1
+  h2:
+    console:
+      enabled: true
+  cache:
+    cache-names:
+      - buckets_api # You can specify multiple buckets for different APIs
+    caffeine:
+      spec: maximumSize=1000000,expireAfterAccess=3600s # maximumSize = Number of entries
+
+
+server:
+  error:
+    whitelabel:
+      enabled: false
+  servlet:
+    context-path: /entrypoint
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        secure: true
+  port: 9999
+  application:
+    name: spamdetector
+
+bandwidths: &myBandwidths
+  - capacity: 10
+    time: 1
+    unit: hours
+
+rate_limits: &myRateLimits
+  - expression: "getHeader('My-Custom-Header')"
+    bandwidths: *myBandwidths
+
+bucket4j:
+  enabled: true
+  filter-method: servlet
+  filters:
+    - cache-name: buckets_api
+      url: .* # You can specify a regex
+      rate-limits: *myRateLimits
