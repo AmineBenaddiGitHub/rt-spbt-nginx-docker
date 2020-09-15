@@ -75,8 +75,13 @@
 			<artifactId>ehcache</artifactId>
 			<version>3.9.0</version>
 		</dependency>
+		<!-- A clamAV client implementation -->
+		<dependency>
+			<groupId>fi.solita.clamav</groupId>
+			<artifactId>clamav-client</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

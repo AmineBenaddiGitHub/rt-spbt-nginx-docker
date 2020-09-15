@@ -7,8 +7,20 @@ services:
     build: ./api/.
     ports:
       - "9999:9999"
+    depends_on: 
+      - scan
+      - proxy
   proxy:
     container_name: proxy
     build: ./proxy/.
+    restart: always
     ports:
       - "8888:8888"
+  scan:
+    hostname: scan
+    container_name: scan
+    # build: ./scan/.
+    image: mailu/clamav:1.7
+    ports:
+      - "3310:3310"
+    restart: always

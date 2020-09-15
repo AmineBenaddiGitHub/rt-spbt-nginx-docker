@@ -12,6 +12,6 @@ RUN mvn package -DskipTests
 
 # Package stage
 FROM openjdk:8
-COPY --from=build /build/target/spam_list-0.0.1-SNAPSHOT.jar spam_list-0.0.1-SNAPSHOT.jar
+COPY --from=build /build/target/spamdetector-0.0.1-SNAPSHOT.jar spamdetector-0.0.1-SNAPSHOT.jar
 EXPOSE 9999
-ENTRYPOINT ["java","-jar","spam_list-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","spamdetector-0.0.1-SNAPSHOT.jar"]
