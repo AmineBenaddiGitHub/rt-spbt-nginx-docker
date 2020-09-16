@@ -6,27 +6,26 @@ import fi.solita.clamav.ClamAVClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FileScanServiceClam implements FileScanService {
 
-    private final ClamAVClient clamAVClient;
-
-    public FileScanServiceClam(){
-        this.clamAVClient = new ClamAVClient("scan", 3310);
-    }
-
     @Override
-    public List<FileScanResponse> scanFiles(MultipartFile[] files) {
+    public List<FileScanResponse> scanFiles(MultipartFile[] files) throws IOException {
+        ClamAVClient clamAVClient = new ClamAVClient("scan", 3310);
+        if(!clamAVClient.ping())
+            return Collections.emptyList();
         return Arrays.stream(files).map(multipartFile -> {
             FileScanResponse fileScanResponse = new FileScanResponse();
             long startTime = System.currentTimeMillis();
             fileScanResponse.setUploadTime(startTime);
             try {
-                byte[] response = this.clamAVClient.scan(multipartFile.getInputStream());
+                byte[] response = clamAVClient.scan(multipartFile.getInputStream());
                 boolean status = ClamAVClient.isCleanReply(response);
                 fileScanResponse.setDetected(!status);
                 System.out.println("File Scanned = {} Clam AV Response = {} " + multipartFile.getOriginalFilename() + (status));

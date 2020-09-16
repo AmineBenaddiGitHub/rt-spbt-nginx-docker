@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class SpamWordsController {
     }
 
     @PostMapping("/upload")
-    public ScanResponse<List<FileScanResponse>> uploadFiles(@RequestParam("files") MultipartFile files) {
-        return new ScanResponse<>(fileScanServiceClam.scanFiles(new MultipartFile[]{files}));
+    public List<FileScanResponse> uploadFiles(@RequestParam("files") MultipartFile files) throws IOException {
+        return fileScanServiceClam.scanFiles(new MultipartFile[]{files});
     }
 }
